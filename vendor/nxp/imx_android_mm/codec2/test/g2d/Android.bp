@@ -1,0 +1,42 @@
+// Build the unit tests.
+cc_test {
+    name: "G2dDev_test",
+
+    srcs: ["G2dDev_test.cpp"],
+    soc_specific: true,
+    shared_libs: [
+        "liblog",    // for ALOG
+        "libcutils", // for properties
+        "libutils",
+        "lib_c2_imx_store",
+        "libcodec2_vndk",
+        "lib_imx_utils",
+        "lib_imx_c2_g2d_filter",
+        "libstagefright_foundation",
+        "libcodec2_hidl@1.0",
+        "libhidlbase",
+        "libcodec2",
+    ],
+    static_libs: [
+        "libgtest",
+    ],
+    header_libs: [
+        "libcodec2_hidl_plugin_headers",
+    ],
+    include_dirs: [
+        "vendor/nxp/fsl-proprietary/include",
+        "vendor/nxp-opensource/imx/include",
+        "vendor/nxp-opensource/imx/display/display",
+        "vendor/nxp/imx_android_mm/codec2/include",
+        "vendor/nxp/imx_android_mm/codec2/base/include",
+        "vendor/nxp/imx_android_mm/codec2/filter/g2d",
+    ],
+
+    cflags: [
+        "-Werror",
+        "-Wall",
+    ],
+
+    vendor: true,
+    enabled: false,
+}

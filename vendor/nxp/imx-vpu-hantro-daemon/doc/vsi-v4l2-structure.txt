@@ -1,0 +1,171 @@
+vsi v4l2 system structure definition
+
+1. Standard v4l2 skeleton
+
+										|- video device 0
+										|
+										|- video device 1
+                    |
+		v4l2-device	---	|...
+			              |
+										|- video device n
+
+	1.1 v4l2 device
+		v4l2 device is initialized by v4l2_device_register(). It has a 
+	parent struct device *dev which is created from platform_device_register().
+		Commonly v4l2 device is embedded in a larger structure as global control.
+	We can refer to struct vsi_v4l2_device for example.
+	
+	1.2 video device
+		Each video device is created by video_device_alloc() and registered to system
+	by video_register_device().
+		It is connected to v4l2 device as its parent device. Each video device has a 
+	file in	/dev/ according to its capability. E.g. for video device it is
+	/dev/video*. So each video device has open/close/read/write/ioctl/mmap/poll
+	interfaces as standard files do.
+	
+	1.3 ioctls
+		Each video device's ioctl will go through v4l2's kernel standard ioctl
+	API. They will finally call video device's ioctl_ops callbacks. Ioctl callbacks
+	are set through struct v4l2_ioctl_ops as a member	of video device. 
+	vsi_v4l2_ioctl is our realization of it. Most of our member functions use
+	default value since it's easier to comply to v4l2 standard this way.
+	
+	1.4 controls
+		v4l2's controls is used to configure video device operation parameters. There
+	are	three kinds of controls: standard, standard menu (where there's a range of
+	choice) and custom defined control. Each custom control has a standard structure
+	to define its content. Each control must have a structure v4l2_ctrl_ops	for
+	v4l2 callback to set/get. I write vsi_setup_ctrls() as example, it sets up one
+	control	for each kind of control.
+	
+	1.5 v4l2 file handle
+	For each open operation of v4l2 video device which go through open API, v4l2 will
+	register it with v4l2_fh_init() and v4l2_fh_add(). We just use it to store some
+	private data now. Currently we create context for each opened file handle.
+	
+	1.6 v4l2 subdev
+	Another important part of v4l2 is subdev. We don't use it in current stage and
+	will update its information later.
+	
+	1.7 v4l2 queue management: vb2_queue and vb2_buffer
+	The critical functionality of v4l2 is buffer control, which is realized through
+	v4l2 queue management. Each video device manages one or more structure vb2_queue.
+	Each vb2_queue manages a number of struct vb2_buffer as their content. 
+	vb2_buffer has internal structure to represent a buffer, who may have over one
+	planes. How to organize and use these buffers are determined by system
+	requirement and driver realization. In most cases we've saw they are link as a list.
+	
+	struct vb2_queue_init has rich parameters. It is initialized by vb2_queue_init().
+	There're two groups of important callbacks: ops and mem_ops. Another group of
+	callbacks is vb2_buf_ops, which is rarely used and whose meaning is not clear.
+	
+	1.7.1 mem_ops callbacks of vb2_queue
+	mem_ops is used as alloc, free, mmap, ref/unref, transfer logic address, 
+	attach/detach dmabuf, etc. These callbacks are used internally by v4l2 kernel,
+	thus they won't be called explicitly. Kernel provides two well defined
+	realization: vb2_dma_contig_memops and vb2_vmalloc_memops. Almost all
+	v4l2 drivers use either of them. We use vb2_dma_contig_memops since we're
+	familiar with DMA_BUF operation.
+	
+	1.7.2 ops callbacks of vb2_queue
+	ops is used as callbacks when v4l2 kernel need do something on buffer in
+	certain operation. Most of these callbacks don't have default value. How to
+	realize these callbacks depends on v4l2's requirement of them and how
+	our v4l2 driver manages buffers. This is critical.
+	There're three kind of buffer, which is transferred as parameter in
+	VIDIOC_REQBUFS: V4L2_MEMORY_DMABUF, V4L2_MEMORY_MMAP, V4L2_MEMORY_USERPTR.
+	Actually there's fourth kind: V4L2_MEMORY_OVERLAY, which is very rarely
+	used. V4L2_MEMORY_DMABUF means all buffers are DMA_BUF allocated by
+	caller app and shared through DMA_BUF's file handle. V4L2_MEMORY_USERPTR
+	means input buffer are allocated by user app and shared by mem mapping
+	user pointer. V4L2_MEMORY_MMAP means v4l2 driver should allocate buffer
+	by itself and returned them to user space app. We'll support only
+	V4L2_MEMORY_MMAP according to our hardware's limit and software
+	flexibility.
+	
+	1.7.3 simple example of queue usage in v4l2 application
+	A simple application using v4l2 to codec looks like this:
+	Through VIDIOC_REQBUFS ioctl, buffer type and number are determined.
+	Then user space app will use VIDIOC_QBUF on each buffer to add them
+	to v4l2 driver's queue. Then VIDIOC_STREAMON is called. Application
+	will wait for VIDIOC_DQBUF for ready buffer returned from v4l2 driver.
+	Note that returned buffer in VIDIOC_DQBUF might not be identical to
+	its input, since which buffer is ready is decided by v4l2 driver.
+	After returned buffer is used up, it can be VIDIOC_QBUF to v4l2
+	driver to use again.
+	
+2. Spec and Test package for v4l2
+
+	v4l2 has spec for user space app, which is attached in wiki as v4l2.pdf.
+	v4l2 kernel driver does not have spec. Currently there're two
+	sets of utils to test single API of kernel driver:
+	v4l-utils: a set of v4l utils. It's a part of apt-get project.
+	linux test project: git https://github.com/linux-test-project/ltp.git.
+		It has a sub directory for v4l2.
+	
+3. VSI v4l2 driver structure
+	
+	Currently VSI v4l2 driver uses stateful method to haste coding
+	and reduce porting problem. Whole system looks like this:
+	
+	
+			v4l2 user space app										VSI v4l2 user space daemon
+			(ffmpeg, gst, etc.)								/
+																			/									|
+					|		|											/										|
+					|		|ioctls							/	msg pipe					VSI middle ware
+					|		|									/		for msg							|
+					|		|								/			exchange						|
+					|		|							/														|
+	
+		VSI v4l2 kernel driver											VSI codec kernel driver
+	
+	3.1 v4l2 user space app
+	v4l2 user space app is conformant to v4l2 user space spec. It needs
+	only communicate with VSI v4l2 kernel driver by ioctls and other
+	standard file operations. It can't see VSI v4l2 user space daemon,
+	nor VSI middle ware, nor VSI codec kernel driver.
+	
+	3.2 VSI v4l2 kernel driver
+	VSI v4l2 kernel driver should be conformant to v4l2 kernel driver
+	definition.	It has three main functionalities.
+	3.2.1
+		Link v4l2 user space app with VSI v4l2 daemon. It receives command from
+		v4l2 user space app by ioctl, reformat it, write it to VSI v4l2
+		daemon through message pipe, receives return value from VSI daemon
+		through message pipe and returns it to v4l2 user space app. Currently
+		message pipe is realized through standard file read/write API.
+	3.2.2
+		Manage buffers, including buffer allocation, buffer sharing and queue
+		control.
+	3.2.3
+		Internal state maintaining. This is used to reduce message exchange
+		with VSI v4l2 daemon.
+	
+	3.3 VSI v4l2 kernel driver device files
+		To realize functionality in 3.2 VSI v4l2 driver creates two device files:
+		/dev/video*, file for v4l2 user space app to use.
+		/dev/v4l2,   file for message exchange with VSI v4l2 daemon.
+		
+	3.4 VSI v4l2 user space daemon
+		This daemon has two aspects: it exchange command and state with v4l2
+		kernel driver through message pipe; it controls VSI codec through
+		middle ware.
+		
+4. VSI v4l2 Code organization	(may change in future)
+	<project.v4l2>
+        +-- develop (developing branch)
+                  +-- doc
+                  +-- v4l2_vsi_daemon (user space)
+                  |     
+                  +-- v4l2_vsi_driver
+                  |        +-- vsi_v4l2.c				v4l2 kernel driver skeleton
+                  |        +-- v4l2-daemon.c		message pipe management
+                  |
+                  +-- test
+                           +-- unit (unit test for some function)
+                           +-- ffmpeg (testing the integrate to ffmpeg)
+                           +-- gst (testing the integrate to ffmpeg)
+                           +-- comform (conformance testing)
+                           

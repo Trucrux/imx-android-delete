@@ -1,0 +1,15 @@
+2021-08-06 P15
+
+Resovled Jira tickes:
+BSLRM865-150 Change sensor API ( ISI ) including multiple changes
+BSLRM865-122 video stabilization (from darker to brighter) time is long due to AE behavior
+BSLRM865-96 4.2.2p8: Is current CSI clk configuration available to driver ( userland ? )
+M865SW-796 File mode changed from 644 to 755 in P14
+M865SW-732 can't resize to 4K if input resolution is 1080p
+M865SW-709 Remove temporary files during building and do clean release
+M865SW-501 how to set test pattern for sensor (ov2775/os08a20)
+M865SW-763 video_test unit test -m set sensor mode is invalid
+M865SW-765 Video may shock when switching enable and disable of HDR
+M865SW-776 use libtinyxml from toolchain, so please remove local tinyxml package
+M865SW-798 update Linux 5.10 dev environment to lf-5.10.35-2.0.0
+

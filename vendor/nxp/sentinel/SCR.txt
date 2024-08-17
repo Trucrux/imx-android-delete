@@ -1,0 +1,11 @@
+NXP Software Content Register
+
+--------------------------------------------
+
+Package:                   *-ahab-container.img
+Outgoing License:          LA_OPT_NXP_Software_License - Additional distribution license granted - Section 2.3 applies
+License File:              COPYING
+Type of content:           Binary
+Description and comments:  i.MX Sentinel firmware
+Release Location:          i.MX Yocto Project mirror
+Origin:                    NXP (proprietary)

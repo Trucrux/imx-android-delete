@@ -1,0 +1,93 @@
+cc_library_shared {
+    name: "lib_imx_utils",
+    srcs: [
+        "IMXUtils.cpp",
+        "FrameFetcher.cpp",
+    ],
+
+    include_dirs: [
+        "hardware/libhardware/include",
+        "vendor/nxp-opensource/imx/include",
+        "vendor/nxp-opensource/imx/display/display",
+        "vendor/nxp/imx_android_mm/extractor",
+        "system/core/include/system",
+        "vendor/nxp/fsl-proprietary/include",
+        "vendor/nxp-opensource/libdrm-imx",
+        "vendor/nxp-opensource/libdrm-imx/include/drm",
+    ],
+
+    shared_libs: [
+        "libcutils", // for properties
+        "liblog",    // for ALOG
+        "libbase", // for C2_LOG
+        "libutils",
+        "libion",
+        "libstagefright_foundation",
+        "libfsldisplay",
+        "libcodec2_hidl@1.0",
+        "libcodec2_vndk",
+        "libfsldisplay",
+    ],
+
+    header_libs: [
+        "media_plugin_headers",
+        "libcodec2_headers",
+    ],
+
+    export_include_dirs: [
+        "include",
+    ],
+
+
+    defaults: [
+        "imx_defaults",
+        "imx_mm_common_default",
+        "imx_codec2_default",
+    ],
+}
+
+cc_library_shared {
+    name: "lib_imx_c2_componentbase",
+
+    srcs: [
+        "IMXC2ComponentBase.cpp",
+        "IMXC2Interface.cpp",
+    ],
+
+    include_dirs: [
+        "hardware/libhardware/include",
+        "frameworks/av/media/libstagefright",
+        "frameworks/av/media/codec2/core/include",
+        "frameworks/av/media/codec2/vndk/include",
+        "frameworks/av/media/codec2/components/base/include",    
+        "vendor/nxp-opensource/imx/include",
+        "vendor/nxp-opensource/imx/display/display",
+        "vendor/nxp/imx_android_mm/extractor",
+        "system/core/include/system",
+    ],
+
+    header_libs: [
+        "media_plugin_headers",
+        "libcodec2_headers",
+    ],
+
+    shared_libs: [
+        "libcutils", // for properties
+        "liblog",    // for ALOG
+        "libstagefright_foundation", // for Mutexed
+        "libbase", // for C2_LOG
+        "libutils",
+        "libcodec2_vndk",
+        "libion",
+    ],
+
+    export_include_dirs: [
+        "include",
+    ],
+
+
+    defaults: [
+        "imx_defaults",
+        "imx_codec2_default",
+    ],
+}

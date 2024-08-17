@@ -1,0 +1,131 @@
+message("Load dependency...")
+
+set(APPSHELL appshell)
+
+if(NOT APPSHELL_SOURCE_ROOT)
+  set(APPSHELL_SOURCE_ROOT ../${APPSHELL})
+endif()
+
+get_filename_component(APPSHELL_SOURCE_ROOT ${APPSHELL_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT APPSHELL_BUILD_ROOT)
+  set(APPSHELL_BUILD_ROOT ../build/build-${APPSHELL}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(APPSHELL_BUILD_ROOT ${APPSHELL_BUILD_ROOT} ABSOLUTE)
+
+set(BOOST boost)
+
+if(NOT BOOST_SOURCE_ROOT)
+  set(BOOST_SOURCE_ROOT ../${BOOST})
+endif()
+
+get_filename_component(BOOST_SOURCE_ROOT ${BOOST_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT BOOST_BUILD_ROOT)
+  set(BOOST_BUILD_ROOT ../build/build-${BOOST}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(BOOST_BUILD_ROOT ${BOOST_BUILD_ROOT} ABSOLUTE)
+
+set(CPPNETLIB cpp-netlib)
+
+if(NOT CPPNETLIB_SOURCE_ROOT)
+  set(CPPNETLIB_SOURCE_ROOT ../${CPPNETLIB})
+endif()
+
+get_filename_component(CPPNETLIB_SOURCE_ROOT ${CPPNETLIB_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT CPPNETLIB_BUILD_ROOT)
+  set(CPPNETLIB_BUILD_ROOT
+      ../build/build-${CPPNETLIB}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(CPPNETLIB_BUILD_ROOT ${CPPNETLIB_BUILD_ROOT} ABSOLUTE)
+
+set(DEWARP dw200)
+
+if(NOT DEWARP_SOURCE_ROOT)
+  set(DEWARP_SOURCE_ROOT ../${DEWARP})
+endif()
+
+get_filename_component(DEWARP_SOURCE_ROOT ${DEWARP_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT DEWARP_BUILD_ROOT)
+  set(DEWARP_BUILD_ROOT ../build/build-${DEWARP}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(DEWARP_BUILD_ROOT ${DEWARP_BUILD_ROOT} ABSOLUTE)
+
+set(JSONCPP jsoncpp)
+
+if(NOT JSONCPP_SOURCE_ROOT)
+  set(JSONCPP_SOURCE_ROOT ../${JSONCPP})
+endif()
+
+get_filename_component(JSONCPP_SOURCE_ROOT ${JSONCPP_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT JSONCPP_BUILD_ROOT)
+  set(JSONCPP_BUILD_ROOT ../build/build-${JSONCPP}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(JSONCPP_BUILD_ROOT ${JSONCPP_BUILD_ROOT} ABSOLUTE)
+
+set(MEDIACONTROL mediacontrol)
+
+if(NOT MEDIACONTROL_SOURCE_ROOT)
+  set(MEDIACONTROL_SOURCE_ROOT ../${MEDIACONTROL})
+endif()
+
+get_filename_component(MEDIACONTROL_SOURCE_ROOT ${MEDIACONTROL_SOURCE_ROOT}
+                       ABSOLUTE)
+
+if(NOT MEDIACONTROL_BUILD_ROOT)
+  set(MEDIACONTROL_BUILD_ROOT
+      ../build/build-${MEDIACONTROL}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(MEDIACONTROL_BUILD_ROOT ${MEDIACONTROL_BUILD_ROOT}
+                       ABSOLUTE)
+
+set(TINYXML2 tinyxml2)
+
+if(NOT TINYXML2_SOURCE_ROOT)
+  set(TINYXML2_SOURCE_ROOT ../${TINYXML2})
+endif()
+
+get_filename_component(TINYXML2_SOURCE_ROOT ${TINYXML2_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT TINYXML2_BUILD_ROOT)
+  set(TINYXML2_BUILD_ROOT ../build/build-${TINYXML2}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(TINYXML2_BUILD_ROOT ${TINYXML2_BUILD_ROOT} ABSOLUTE)
+
+if(NOT UNITS_GENERATE_ROOT)
+  set(UNITS_GENERATE_ROOT ${LIB_ROOT})
+endif()
+
+get_filename_component(UNITS_GENERATE_ROOT ${UNITS_GENERATE_ROOT} ABSOLUTE)
+
+set(UTILS3RD utils3rd)
+
+if(NOT UTILS3RD_ROOT)
+  set(UTILS3RD_ROOT ../${UTILS3RD})
+endif()
+
+get_filename_component(UTILS3RD_ROOT ${UTILS3RD_ROOT} ABSOLUTE)
+
+set(VVCAM vvcam)
+
+if(NOT VVCAM_SOURCE_ROOT)
+  set(VVCAM_SOURCE_ROOT ../${VVCAM})
+endif()
+
+get_filename_component(VVCAM_SOURCE_ROOT ${VVCAM_SOURCE_ROOT} ABSOLUTE)
+
+if(NOT VVCAM_BUILD_ROOT)
+  set(VVCAM_BUILD_ROOT ../build/build-${VVCAM}${ARCH}-${CMAKE_BUILD_TYPE})
+endif()
+
+get_filename_component(VVCAM_BUILD_ROOT ${VVCAM_BUILD_ROOT} ABSOLUTE)

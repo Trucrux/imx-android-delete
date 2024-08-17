@@ -1,0 +1,76 @@
+imx_g2d_filter_defaults {
+    name: "imx_g2d_filter_default",
+}
+
+bootstrap_go_package {
+    name: "soong-imx_g2d_filter",
+    pkgPath: "android/soong/vendor/nxp/imx_android_mm/codec2/filter/g2d",
+    deps: [
+        "blueprint",
+        "blueprint-pathtools",
+        "soong",
+        "soong-android",
+        "soong-cc",
+        "soong-genrule",
+    ],
+    srcs: [
+        "imx_filter_g2d.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cc_library_shared {
+    name: "lib_imx_c2_g2d_filter",
+
+    srcs: [
+        "G2dFilterFactory.cpp",
+        "G2dFilterInterface.cpp",
+        "G2dFilter.cpp",
+        "G2dDevice.cpp",
+    ],
+
+    defaults: [
+        "imx_mm_common_default",
+        "imx_g2d_filter_default",
+    ],
+
+    header_libs: [
+        "libcodec2_hidl_plugin_headers",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libcodec2",
+        "libcutils",
+        "liblog",
+        "libprocessgroup",
+        "libsfplugin_ccodec_utils",
+        "libsync",
+        "libui",
+        "libutils",
+        "libbinder",
+        "libcodec2_hidl@1.0",
+        "libhidlbase",
+        "lib_imx_c2_componentbase",
+        "lib_c2_imx_store",
+        "libcodec2_vndk",
+        "lib_imx_utils",
+        "libstagefright_foundation",
+    ],
+
+    include_dirs: [
+        "vendor/nxp/imx_android_mm/codec2/include",
+        "vendor/nxp/imx_android_mm/codec2/base/include",
+        "vendor/nxp/fsl-proprietary/include",
+        "vendor/nxp-opensource/imx/include",
+        "vendor/nxp-opensource/imx/display/display",
+        "device/nxp/common/kernel-headers",
+    ],
+
+    cflags: [
+        "-Werror",
+        "-Wall",
+    ],
+
+    vendor: true,
+}

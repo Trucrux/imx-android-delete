@@ -1,0 +1,66 @@
+IMX_VPU_HANTRO_DAEMON_DEFAULTS {
+    name: "IMX_VPU_HANTRO_DAEMON_DEFAULT",
+
+    include_dirs: [
+        "vendor/trucrux/linux_fslc_trucrux/drivers/mxc/hantro_v4l2",
+        "vendor/nxp/imx-vpu-hantro/decoder_sw/software/source/inc",
+    ],
+
+    cflags: [
+        "-fPIC",
+        "-Wall",
+        "-Wno-pointer-sign",
+        "-Wno-unused-function",
+        "-O2",
+        "-DUSE_EXTERNAL_BUFFER",
+        "-DUSE_OUTPUT_RELEASE",
+        "-DUSE_HW",
+        "-DUSE_G1",
+        "-DUSE_G2",
+    ],
+
+    srcs: [
+        "v4l2_vsi_daemon/src/buffer_list.c",
+        "v4l2_vsi_daemon/src/command_defines.c",
+        "v4l2_vsi_daemon/src/dec_dpb_buff.c",
+        "v4l2_vsi_daemon/src/fifo.c",
+        "v4l2_vsi_daemon/src/hash_table.c",
+        "v4l2_vsi_daemon/src/object_heap.c",
+        "v4l2_vsi_daemon/src/vsi_dec.c",
+        "v4l2_vsi_daemon/src/vsi_main.c",
+    ],
+
+    shared_libs: [
+        "libhantro",
+        "libg1",
+    ],
+
+    vendor: true,
+}
+
+
+bootstrap_go_package {
+    name: "soong-imx-vpu-hantro-daemon",
+    pkgPath: "android/soong/vendor/nxp/imx-vpu-hantro-daemon",
+    deps: [
+        "blueprint",
+        "blueprint-pathtools",
+        "soong",
+        "soong-android",
+        "soong-cc",
+        "soong-genrule",
+    ],
+    srcs: [
+        "imx_vpu_hantro_daemon.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cc_binary {
+    name: "vsidaemon",
+
+    defaults: [
+        "IMX_VPU_HANTRO_DAEMON_DEFAULT",
+    ],
+
+}

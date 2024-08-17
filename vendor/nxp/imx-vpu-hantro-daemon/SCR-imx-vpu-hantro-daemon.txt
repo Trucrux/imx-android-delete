@@ -1,0 +1,13 @@
+Software Content Register
+
+Package:                     imx-vpu-hantro-daemon-1.1.5
+Version:                     1.1.5
+Outgoing License:            MIT License
+License File:                LICENSE.txt
+Type of Content:             binary
+Description and comments:    VPU library
+Release Location:            Mirror
+Origin:                      NXP (MIT)
+                             VeriSilicon Inc. (MIT)
+                             Intel Corporation - intel-vaapi-driver (MIT) - https://github.com/intel/intel-vaapi-driver
+

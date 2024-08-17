@@ -1,0 +1,93 @@
+bootstrap_go_package {
+    name: "soong-c2store",
+    pkgPath: "android/soong/vendor/nxp/imx_android_mm/codec2/store",
+    deps: [
+        "blueprint",
+        "blueprint-pathtools",
+        "soong",
+        "soong-android",
+        "soong-cc",
+        "soong-genrule",
+    ],
+    srcs: [
+        "c2store.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+imx_c2store_defaults {
+    name: "imx_c2store_default"
+}
+
+cc_library_shared {
+    name: "lib_c2_imx_store",
+
+    srcs: [
+        "RegistryParser.cpp",
+        "ImxC2Store.cpp",
+    ],
+
+    shared_libs: [
+        "libcutils",
+        "libcodec2_hidl@1.0",
+        "liblog",
+        "libcodec2_vndk",
+        "libion",
+    ],
+
+    include_dirs: [
+        "vendor/nxp/imx_android_mm/codec2/include",
+        "device/nxp/common/kernel-headers",
+        "system/memory/libion",
+        "system/memory/libion/kernel-headers/linux",
+        "vendor/nxp-opensource/imx/include",
+    ],
+
+    defaults: [
+        "imx_defaults",
+        "imx_codec2_default",
+    ],
+
+}
+
+cc_binary {
+    name: "android.hardware.media.c2@1.0-service",
+    defaults: [
+        "hidl_defaults",
+        "imx_codec2_default",
+        "imx_c2store_default",
+    ],
+
+    soc_specific: true,
+    relative_install_path: "hw",
+    srcs: [
+        "ImxService.cpp",
+    ],
+
+    init_rc: ["android.hardware.media.c2@1.0-service.rc"],
+
+    shared_libs: [
+        "android.hardware.media.c2@1.0",
+        "libbinder",
+        "libcodec2_hidl@1.0",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "lib_c2_imx_store",
+    ],
+
+    include_dirs: [
+        "vendor/nxp/imx_android_mm/codec2/include",
+    ],
+
+    arch: {
+        arm: {
+            required: ["device/nxp/common/seccomp_policy/codec2.vendor.base.policy"],
+        },
+        x86: {
+            required: ["device/nxp/common/seccomp_policy/codec2.vendor.base.policy"],
+        },
+    },
+
+    compile_multilib: "first",
+}
